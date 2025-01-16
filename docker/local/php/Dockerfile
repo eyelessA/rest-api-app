@@ -16,8 +16,6 @@ RUN apt-get update && apt-get install -y \
       apt-get install -y nodejs && \
       pecl install redis && \
       docker-php-ext-enable redis && \
-      postgresql-server-dev-all \
-      postgis && \
       docker-php-ext-install pdo pdo_pgsql && \
       docker-php-ext-install sockets && \
       docker-php-ext-configure gd --with-freetype --with-jpeg && \
