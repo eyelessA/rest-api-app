@@ -65,16 +65,9 @@ class OrganizationService
         return Organization::query()->findOrFail($id);
     }
 
-    /**
-     * @throws OrganizationNotFoundException
-     */
     public function getOrganizationActivityName(string $activity): Collection
     {
-        $activity = Activity::query()->where('name', $activity)->first();
-
-        if (!$activity) {
-            throw new OrganizationNotFoundException("Организация c видом деятельности {$activity} не найдена");
-        }
+        $activity = Activity::query()->where('name', $activity)->firstOrFail();
 
         $allActivities = collect([$activity->id]);
 
