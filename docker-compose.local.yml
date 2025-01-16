@@ -17,6 +17,11 @@ services:
       dockerfile: docker/local/php/Dockerfile
     volumes:
       - .:/var/www
+    command: >
+      sh -c "
+      composer install --no-dev --optimize-autoloader &&
+      php-fpm
+      "
     restart: unless-stopped
     container_name: rest_api_app_php
 
