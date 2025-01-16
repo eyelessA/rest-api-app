@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->index();
             $table->unsignedBigInteger('parent_id')->nullable()->index();
             $table->foreign('parent_id')->references('id')->on('activities');
             $table->unsignedInteger('level')->default(1);
