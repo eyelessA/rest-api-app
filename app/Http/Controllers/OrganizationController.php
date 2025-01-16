@@ -10,7 +10,6 @@ use App\Http\Resources\Organization\OrganizationActivityNameResource;
 use App\Http\Resources\Organization\OrganizationResource;
 use App\Services\Organization\OrganizationService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
 
 /**
@@ -310,17 +309,9 @@ class OrganizationController extends Controller
      */
     public function getOrganizationActivityName(OrganizationActivityNameRequest $organizationActivityRequest): mixed
     {
-        try {
-            $data = $organizationActivityRequest->validated('activity');
-            $organizations = $this->organizationService->getOrganizationActivityName($data);
-
-            return OrganizationActivityNameResource::collection($organizations)->resource;
-        } catch (\Exception $exception) {
-            return response()->json([
-                'message' => $exception->getMessage(),
-                'status' => 404
-            ], 404);
-        }
+        $data = $organizationActivityRequest->validated('activity');
+        $organizations = $this->organizationService->getOrganizationActivityName($data);
+        return OrganizationActivityNameResource::collection($organizations)->resource;
     }
 
     /**
