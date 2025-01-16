@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreign('activity_id')->references('id')->on('activities');
             $table->timestamps();
         });
-        DB::statement('CREATE INDEX idx_name_trgm ON organizations USING gin (name gin_trgm_ops)');
+//        DB::statement('CREATE INDEX idx_name_trgm ON organizations USING gin (name gin_trgm_ops)');
     }
 
     /**
