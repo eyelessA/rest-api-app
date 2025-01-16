@@ -2,7 +2,6 @@
 
 namespace App\Services\Organization;
 
-use App\Exceptions\BuildingNotFoundException;
 use App\Exceptions\OrganizationNotFoundException;
 use App\Models\Activity;
 use App\Models\Building;
@@ -13,21 +12,18 @@ use Illuminate\Support\Facades\DB;
 
 class OrganizationService
 {
+
     /**
-     * @throws BuildingNotFoundException
+     * @throws OrganizationNotFoundException
      */
     public function getOrganizationsInBuilding(int $id): mixed
     {
-        $building = Building::query()->find($id);
-
-        if (!$building) {
-            throw new BuildingNotFoundException("Здание с ID {$id} не найдено");
-        }
+        $building = Building::query()->findOrFail($id);
 
         $organizations = $building->organizations;
 
-        if ($organizations->isEmpty()) {
-            throw new BuildingNotFoundException("Организации для здания {$building->address} не найдены");
+        if (empty($organizations)) {
+            throw new OrganizationNotFoundException("Организации для здания {$building->address} не найдены");
         }
 
         return $organizations;
@@ -38,15 +34,11 @@ class OrganizationService
      */
     public function getOrganizationActivity(int $id): Collection
     {
-        $activity = Activity::query()->find($id);
-
-        if (!$activity) {
-            throw new OrganizationNotFoundException("Деятельность с ID {$id} не найдено");
-        }
+        $activity = Activity::query()->findOrFail($id);
 
         $organizations = $activity->organizations;
 
-        if ($organizations->isEmpty()) {
+        if (empty($organizations)) {
             throw new OrganizationNotFoundException("Организации для деятельности {$activity->name} не найдены");
         }
 
@@ -68,16 +60,9 @@ class OrganizationService
             ->get();
     }
 
-    /**
-     * @throws OrganizationNotFoundException
-     */
     public function getOrganization(int $id): Organization|Collection|Model
     {
-        $organization = Organization::query()->find($id);
-        if (!$organization) {
-            throw new OrganizationNotFoundException('Организация не найдена');
-        }
-        return $organization;
+        return Organization::query()->findOrFail($id);
     }
 
     /**
@@ -85,30 +70,21 @@ class OrganizationService
      */
     public function getOrganizationActivityName(string $activity): Collection
     {
-        $activities = Activity::query()->where('name', $activity)->get();
+        $activity = Activity::query()->where('name', $activity)->first();
 
-        if ($activities->isEmpty()) {
+        if (!$activity) {
             throw new OrganizationNotFoundException("Организация c видом деятельности {$activity} не найдена");
         }
 
-        $allActivities = collect();
+        $allActivities = collect([$activity->id]);
 
-        foreach ($activities as $activity) {
-            $allActivities->push($activity->id);
-            $allActivities = $allActivities->merge($activity->children()->pluck('id'));
-        }
+        $allActivities = $allActivities->merge($activity->children()->pluck('id'));
+
         return Organization::query()->whereIn('activity_id', $allActivities)->get();
     }
 
-    /**
-     * @throws OrganizationNotFoundException
-     */
-    public function getOrganizationSearchByName(string $name)
+    public function getOrganizationSearchByName(string $name): Collection
     {
-        $organization = Organization::query()->where('name', '=', $name)->first();
-        if (!$organization) {
-            throw new OrganizationNotFoundException("Организация по имени {$name} не найдена");
-        }
-        return $organization;
+        return Organization::query()->where('name', 'LIKE', "%{$name}%")->get();
     }
 }
