@@ -17,13 +17,10 @@ services:
       dockerfile: docker/local/php/Dockerfile
     volumes:
       - .:/var/www
-    command: >
-      sh -c "
-      composer install --no-dev --optimize-autoloader &&
-      php-fpm
-      "
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh
     restart: unless-stopped
     container_name: rest_api_app_php
+    entrypoint: ["sh", "/usr/local/bin/entrypoint.sh"]
 
   pgsql:
     image: 'postgis/postgis:latest'
