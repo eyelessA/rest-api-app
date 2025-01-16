@@ -1,0 +1,556 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "rest-api-app",
+        "version": "2.0.0"
+    },
+    "paths": {
+        "/api/": {},
+        "/api/organization/building/{id}": {
+            "get": {
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "Список всех организаций, находящихся в конкретном здании",
+                "description": "Возвращает коллекцию организаций, связанных с заданным зданием.",
+                "operationId": "8bc5a6a1189d1731f74a88a21cba4be3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID здания",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "description": "ID организации",
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "description": "Название организации",
+                                                "type": "string",
+                                                "example": "ООО Рога и Копыта"
+                                            },
+                                            "phone_number": {
+                                                "description": "Номер телефона",
+                                                "type": "string",
+                                                "example": "2-222-222"
+                                            },
+                                            "building_id": {
+                                                "description": "ID здания",
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "activity": {
+                                                "description": "Информация о виде деятельности",
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "ID вида деятельности",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "description": "Название вида деятельности",
+                                                        "type": "string",
+                                                        "example": "Еда"
+                                                    },
+                                                    "parent_id": {
+                                                        "description": "ID родительского вида деятельности",
+                                                        "type": "integer",
+                                                        "example": null
+                                                    },
+                                                    "level": {
+                                                        "description": "Уровень иерархии",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Организации не найдены"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                }
+            }
+        },
+        "/api/organization/activity/{id}": {
+            "get": {
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "Список всех организаций, относящихся к указанному виду деятельности",
+                "description": "Возвращает коллекцию организаций, которые имеют указанный вид деятельности.",
+                "operationId": "e888006bc8adee9a85951dac6be258a7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID вида деятельности",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "description": "ID организации",
+                                                "type": "integer",
+                                                "example": 2
+                                            },
+                                            "name": {
+                                                "description": "Название организации",
+                                                "type": "string",
+                                                "example": "ООО Apple"
+                                            },
+                                            "phone_number": {
+                                                "description": "Номер телефона",
+                                                "type": "string",
+                                                "example": "3-333-333"
+                                            },
+                                            "building_id": {
+                                                "description": "ID здания",
+                                                "type": "integer",
+                                                "example": 2
+                                            },
+                                            "activity": {
+                                                "description": "Информация о виде деятельности",
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "ID вида деятельности",
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "name": {
+                                                        "description": "Название вида деятельности",
+                                                        "type": "string",
+                                                        "example": "Автомобили"
+                                                    },
+                                                    "parent_id": {
+                                                        "description": "ID родительского вида деятельности",
+                                                        "type": "integer",
+                                                        "example": null
+                                                    },
+                                                    "level": {
+                                                        "description": "Уровень иерархии",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Организации не найдены для указанного вида деятельности"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                }
+            }
+        },
+        "/api/organization/nearby": {
+            "post": {
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "Список организаций в указанной области",
+                "description": "Возвращает список организаций и зданий, которые находятся в заданной области, указанной массивом координат.",
+                "operationId": "dbfc36525d89e5709d5dae6e4bc62952",
+                "requestBody": {
+                    "description": "Массив координат, задающих область поиска.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "coordinates"
+                                ],
+                                "properties": {
+                                    "coordinates": {
+                                        "description": "Массив координат, задающий область. Каждая координата представлена как массив [широта, долгота].",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 55.7558
+                                            }
+                                        },
+                                        "example": [
+                                            [
+                                                55.978508,
+                                                37.170409
+                                            ],
+                                            [
+                                                55.971481,
+                                                37.174577
+                                            ],
+                                            [
+                                                55.982639,
+                                                37.179951
+                                            ]
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "organizations": {
+                                            "description": "Список организаций",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "ID здания",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "description": "Название здания",
+                                                        "type": "string",
+                                                        "example": "ООО Рога и Копыта"
+                                                    },
+                                                    "phone_number": {
+                                                        "description": "Номер телефона",
+                                                        "type": "string",
+                                                        "example": "3-333-333"
+                                                    },
+                                                    "building_id": {
+                                                        "description": "ID здания",
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "activity": {
+                                                        "description": "Информация о виде деятельности",
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Некорректные входные данные"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                }
+            }
+        },
+        "/api/organization/{id}": {
+            "get": {
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "Получить информацию об организации по её идентификатору",
+                "description": "Возвращает детальную информацию об организации, включая её вид деятельности и здание.",
+                "operationId": "ba65b52b99eaefb4a394c24e191fff8c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID организации",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "ID организации",
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "name": {
+                                            "description": "Название организации",
+                                            "type": "string",
+                                            "example": "ООО Apple"
+                                        },
+                                        "phone_number": {
+                                            "description": "Номер телефона",
+                                            "type": "string",
+                                            "example": "3-333-333"
+                                        },
+                                        "building_id": {
+                                            "description": "ID здания",
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "activity": {
+                                            "description": "Информация о виде деятельности",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID вида деятельности",
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "description": "Название вида деятельности",
+                                                    "type": "string",
+                                                    "example": "Еда"
+                                                },
+                                                "parent_id": {
+                                                    "description": "ID родительского вида деятельности",
+                                                    "type": "integer",
+                                                    "example": null
+                                                },
+                                                "level": {
+                                                    "description": "Уровень иерархии",
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Организация не найдена"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                }
+            }
+        },
+        "/api/organization/activity/": {
+            "get": {
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "Получить организации по виду деятельности",
+                "description": "Возвращает коллекцию организаций, которые соответствуют указанному виду деятельности.",
+                "operationId": "ff93c45d1c70eaeb09a0ce1607c9209d",
+                "parameters": [
+                    {
+                        "name": "activity",
+                        "in": "query",
+                        "description": "Название вида деятельности, по которому нужно найти организации",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "description": "ID организации",
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "description": "Название организации",
+                                                "type": "string",
+                                                "example": "ООО Рога и Копыта"
+                                            },
+                                            "phone_number": {
+                                                "description": "Номер телефона организации",
+                                                "type": "string",
+                                                "example": "2-222-222"
+                                            },
+                                            "building_id": {
+                                                "description": "ID здания организации",
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "activity_id": {
+                                                "description": "ID вида деятельности",
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "activity": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "ID вида деятельности",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "description": "Название вида деятельности",
+                                                        "type": "string",
+                                                        "example": "Еда"
+                                                    },
+                                                    "parent_id": {
+                                                        "description": "ID родительской активности",
+                                                        "type": "integer",
+                                                        "example": null
+                                                    },
+                                                    "level": {
+                                                        "description": "Уровень активности",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "children": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "description": "Названия дочерних активностей",
+                                                            "type": "string",
+                                                            "example": "Мясная продукция"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Не найдено организаций для указанного вида деятельности"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                }
+            }
+        },
+        "/api/organization/search-by-name/": {
+            "get": {
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "Поиск организации по названию",
+                "description": "Возвращает организацию по указанному названию. Если организация не найдена, возвращается пустой результат.",
+                "operationId": "697be5280ef28f7bc0bb11262b582b79",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Название организации для поиска",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "ID организации",
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "description": "Название организации",
+                                            "type": "string",
+                                            "example": "ООО Рога и Копыта"
+                                        },
+                                        "phone_number": {
+                                            "description": "Номер телефона организации",
+                                            "type": "string",
+                                            "example": "2-222-222"
+                                        },
+                                        "building_id": {
+                                            "description": "ID здания организации",
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "activity_id": {
+                                            "description": "ID вида деятельности",
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Организация не найдена"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Organization",
+            "description": "Organization"
+        }
+    ]
+}
