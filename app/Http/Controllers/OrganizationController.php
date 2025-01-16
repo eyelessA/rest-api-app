@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\OrganizationNotFoundException;
 use App\Http\Requests\Organization\OrganizationActivityNameRequest;
 use App\Http\Requests\Organization\OrganizationNameRequest;
 use App\Http\Requests\Organization\OrganizationNearbyRequest;
@@ -9,6 +10,7 @@ use App\Http\Resources\Organization\OrganizationActivityNameResource;
 use App\Http\Resources\Organization\OrganizationResource;
 use App\Services\Organization\OrganizationService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
 
 /**
@@ -79,7 +81,7 @@ class OrganizationController extends Controller
         try {
             $organizations = $this->organizationService->getOrganizationsInBuilding($id);
             return OrganizationResource::collection($organizations)->resource;
-        } catch (\Exception $exception) {
+        } catch (OrganizationNotFoundException $exception) {
             return response()->json([
                 'message' => $exception->getMessage(),
                 'status' => 404
@@ -135,7 +137,7 @@ class OrganizationController extends Controller
         try {
             $organizations = $this->organizationService->getOrganizationActivity($id);
             return OrganizationResource::collection($organizations)->resource;
-        } catch (\Exception $exception) {
+        } catch (OrganizationNotFoundException $exception) {
             return response()->json([
                 'message' => $exception->getMessage(),
                 'status' => 404
@@ -205,14 +207,7 @@ class OrganizationController extends Controller
     public function getNearbyOrganizations(OrganizationNearbyRequest $organizationNearbyRequest): JsonResponse|Collection
     {
         $data = $organizationNearbyRequest->validated();
-        $organizations = $this->organizationService->getNearbyOrganizations($data['coordinates']);
-        if ($organizations->isEmpty()) {
-            return response()->json([
-                'message' => "Нет организаций в данном радиусе",
-                'status' => 200
-            ], 200);
-        }
-        return $organizations;
+        return $this->organizationService->getNearbyOrganizations($data['coordinates']);
     }
 
     /**
@@ -257,15 +252,8 @@ class OrganizationController extends Controller
      */
     public function getOrganization(int $id): OrganizationResource|JsonResponse
     {
-        try {
-            $organization = $this->organizationService->getOrganization($id);
-            return OrganizationResource::make($organization);
-        } catch (\Exception $exception) {
-            return response()->json([
-                'message' => $exception->getMessage(),
-                'status' => 404
-            ], 404);
-        }
+        $organization = $this->organizationService->getOrganization($id);
+        return OrganizationResource::make($organization);
     }
 
     /**
@@ -370,17 +358,10 @@ class OrganizationController extends Controller
      *     )
      * )
      */
-    public function getOrganizationSearchByName(OrganizationNameRequest $organizationNameRequest): OrganizationResource|JsonResponse
+    public function getOrganizationSearchByName(OrganizationNameRequest $organizationNameRequest): mixed
     {
-        try {
-            $data = $organizationNameRequest->validated('name');
-            $organization = $this->organizationService->getOrganizationSearchByName($data);
-            return OrganizationResource::make($organization);
-        } catch (\Exception $exception) {
-            return response()->json([
-                'message' => $exception->getMessage(),
-                'status' => 404
-            ], 404);
-        }
+        $data = $organizationNameRequest->validated('name');
+        $organization = $this->organizationService->getOrganizationSearchByName($data);
+        return OrganizationResource::collection($organization)->resource;
     }
 }
